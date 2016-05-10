@@ -1,8 +1,11 @@
 defmodule TexasUnitTest do
-  use ExUnit.Case
-  doctest TexasUnit
+  use TexasUnit
 
-  test "ExUnit style \"test\" works " do
+  test "ExUnit style \"test\" works" do
+    assert :this_test_compiled == :this_test_compiled
+  end
+
+  it "RSpec style \"it\" works" do
     assert :this_test_compiled == :this_test_compiled
   end
 end
