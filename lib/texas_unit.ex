@@ -1,29 +1,32 @@
 defmodule TexasUnit do
+  alias TexasUnit.Stack
+
   defmacro __using__(opts) do
     quote do
       use ExUnit.Case
       import TexasUnit
-      Module.put_attribute(__MODULE__, :stack, [])
+      require Stack
+      Stack.initialize
     end
   end
 
   defmacro describe(description, block) do
     quote do
-      old_stack = Module.get_attribute(__MODULE__, :stack)
-      new_stack = [unquote(description)|old_stack]
-      Module.put_attribute(__MODULE__, :stack, new_stack)
+      unquote(description) |> Stack.push
       unquote(block)
-      Module.put_attribute(__MODULE__, :stack, old_stack)
+      Stack.pop
     end
   end
 
   defmacro it(description, block) do
     quote do
       full_description =
-        [unquote(description)|Module.get_attribute(__MODULE__, :stack)]
+        [unquote(description)|Module.get_attribute(__MODULE__, :descriptions)]
         |> Enum.reverse
         |> Enum.join(" ")
-      ExUnit.Case.test(full_description, unquote(block))
+      unique_id = "(##{:erlang.unique_integer([:positive, :monotonic])})"
+      unique_description = "#{full_description} #{unique_id}"
+      ExUnit.Case.test(unique_description, unquote(block))
     end
   end
 end
