@@ -1,5 +1,5 @@
-defmodule TexasUnitTest do
-  use TexasUnit
+defmodule TexUnitTest do
+  use TexUnit
 
   test "ExUnit style \"test\" works" do
     assert :this_test_compiled == :this_test_compiled

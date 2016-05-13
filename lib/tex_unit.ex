@@ -1,10 +1,10 @@
-defmodule TexasUnit do
-  alias TexasUnit.Stack
+defmodule TexUnit do
+  alias TexUnit.Stack
 
   defmacro __using__(opts) do
     quote do
       use ExUnit.Case
-      import TexasUnit
+      import TexUnit
       require Stack
       Stack.initialize
     end

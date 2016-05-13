@@ -1,4 +1,4 @@
-defmodule TexasUnit.Stack do
+defmodule TexUnit.Stack do
   defmacro initialize do
     quote do
       Module.put_attribute(__MODULE__, :descriptions, [])
