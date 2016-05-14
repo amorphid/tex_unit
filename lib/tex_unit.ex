@@ -6,15 +6,15 @@ defmodule TexUnit do
       use ExUnit.Case
       import TexUnit
       require Stack
-      Stack.initialize
+      __MODULE__ |> Stack.initialize
     end
   end
 
   defmacro describe(description, block) do
     quote do
-      unquote(description) |> Stack.push
+      {__MODULE__, unquote(description)} |> Stack.push
       unquote(block)
-      Stack.pop
+      __MODULE__ |> Stack.pop
     end
   end
 
