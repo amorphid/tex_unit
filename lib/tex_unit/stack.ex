@@ -1,4 +1,7 @@
 defmodule TexUnit.Stack do
+  alias TexUnit.Context
+  require Context
+
   defmacro initialize(module) do
     quote do
       unquote(put_stack(module, []))
@@ -8,7 +11,8 @@ defmodule TexUnit.Stack do
   defmacro push({module, description}) do
     quote do
       old_stack = unquote(get_stack(module))
-      new_stack = [unquote(description) | old_stack]
+      context   = {unquote(description)} |> Context.new
+      new_stack = [context | old_stack]
       unquote(put_stack(module, quote do new_stack end))
     end
   end
@@ -20,15 +24,21 @@ defmodule TexUnit.Stack do
     end
   end
 
+  defmacro stack(module) do
+    quote do
+      unquote(get_stack(module))
+    end
+  end
+
   defp get_stack(module) do
     quote do
-      Module.get_attribute(unquote(module), :descriptions)
+      Module.get_attribute(unquote(module), :stack)
     end
   end
 
   defp put_stack(module, stack) do
     quote do
-      Module.put_attribute(unquote(module), :descriptions, unquote(stack))
+      Module.put_attribute(unquote(module), :stack, unquote(stack))
     end
   end
 end
