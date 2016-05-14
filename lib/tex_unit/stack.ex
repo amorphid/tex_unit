@@ -8,10 +8,10 @@ defmodule TexUnit.Stack do
     end
   end
 
-  defmacro push({module, description}) do
+  defmacro push({module, context}) do
     quote do
       old_stack = unquote(get_stack(module))
-      context   = {unquote(description)} |> Context.new
+      context   = unquote(context) |> Context.new
       new_stack = [context | old_stack]
       unquote(put_stack(module, quote do new_stack end))
     end
