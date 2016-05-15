@@ -11,7 +11,7 @@ defmodule TexUnit do
     end
   end
 
-  defmacro describe(description, block) do
+  defmacro describe(description \\ "", block) do
     quote do
       flag = Module.get_attribute(__MODULE__, :flag)
       Module.put_attribute(__MODULE__, :flag, nil)
@@ -21,7 +21,7 @@ defmodule TexUnit do
     end
   end
 
-  defmacro it(description, block) do
+  defmacro it(description \\ "", block) do
     quote do
       flag = Module.get_attribute(__MODULE__, :flag)
       {__MODULE__, {unquote(description), flag}} |> Stack.push

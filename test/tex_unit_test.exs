@@ -78,4 +78,10 @@ defmodule TexUnitTest do
       assert @__flag__ == [banana: true, boat: true, otter: true, seaweed: true]
     end
   end
+
+  describe do
+    it do
+      assert :description_may_be_empty == :description_may_be_empty
+    end
+  end
 end
