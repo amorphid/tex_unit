@@ -84,4 +84,20 @@ defmodule TexUnitTest do
       assert :description_may_be_empty == :description_may_be_empty
     end
   end
+
+  context "RSpec style \"context\" wrapped around" do
+    describe "RSpec style \"describe\" wrapped around" do
+      it "RSpec style \"it\" works" do
+        assert :this_test_compiled == :this_test_compiled
+      end
+    end
+  end
+
+  describe "RSpec style \"describe\" wrapped around" do
+    context "RSpec style \"context\" wrapped around" do
+      it "RSpec style \"it\" works" do
+        assert :this_test_compiled == :this_test_compiled
+      end
+    end
+  end
 end

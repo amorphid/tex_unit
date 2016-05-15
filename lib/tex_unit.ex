@@ -11,13 +11,15 @@ defmodule TexUnit do
     end
   end
 
+  defmacro context(description \\ "", block) do
+    quote do
+      unquote(do_describe(description, block))
+    end
+  end
+
   defmacro describe(description \\ "", block) do
     quote do
-      flag = Module.get_attribute(__MODULE__, :flag)
-      Module.put_attribute(__MODULE__, :flag, nil)
-      {__MODULE__, {unquote(description), flag}} |> Stack.push
-      unquote(block)
-      __MODULE__ |> Stack.pop
+      unquote(do_describe(description, block))
     end
   end
 
@@ -52,6 +54,16 @@ defmodule TexUnit do
       Module.put_attribute(__MODULE__, :tag, flags)
       Module.put_attribute(__MODULE__, :__flag__, flags)
       ExUnit.Case.test(unique_description, unquote(block))
+    end
+  end
+
+  defp do_describe(description, block) do
+    quote do
+      flag = Module.get_attribute(__MODULE__, :flag)
+      Module.put_attribute(__MODULE__, :flag, nil)
+      {__MODULE__, {unquote(description), flag}} |> Stack.push
+      unquote(block)
+      __MODULE__ |> Stack.pop
     end
   end
 end
