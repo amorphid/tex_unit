@@ -25,9 +25,7 @@ defmodule TexUnit do
 
   defmacro it(description \\ "", block) do
     quote do
-      flag = Module.get_attribute(__MODULE__, :flag)
-      {__MODULE__, {unquote(description), flag}} |> Stack.push
-      Module.put_attribute(__MODULE__, :flag, nil)
+      unquote(description |> push)
 
       flags =
       __MODULE__
@@ -47,7 +45,7 @@ defmodule TexUnit do
         |> Enum.reverse
         |> Enum.join(" ")
 
-      __MODULE__ |> Stack.pop
+      unquote(pop)
 
       unique_id = "(##{:erlang.unique_integer([:positive, :monotonic])})"
       unique_description = "#{full_description} #{unique_id}"
@@ -59,10 +57,22 @@ defmodule TexUnit do
 
   defp do_describe(description, block) do
     quote do
+      unquote(description |> push)
+      unquote(block)
+      unquote(pop)
+    end
+  end
+
+  defp push(description) do
+    quote do
       flag = Module.get_attribute(__MODULE__, :flag)
       Module.put_attribute(__MODULE__, :flag, nil)
       {__MODULE__, {unquote(description), flag}} |> Stack.push
-      unquote(block)
+    end
+  end
+
+  defp pop do
+    quote do
       __MODULE__ |> Stack.pop
     end
   end
