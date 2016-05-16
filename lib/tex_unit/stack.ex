@@ -8,6 +8,30 @@ defmodule TexUnit.Stack do
     end
   end
 
+  defmacro flags(module) do
+    quote do
+      unquote(get_stack(module))
+      |> Enum.map(fn context -> context.flag end)
+      |> Enum.reject(fn i -> is_nil(i) end)
+      |> List.flatten
+      |> Enum.reverse
+      |> Enum.into(%{})
+      |> Enum.to_list
+    end
+  end
+
+  defmacro new_description(module) do
+    quote do
+      full_description =
+        unquote(get_stack(module))
+        |> Enum.map(fn context -> context.description end)
+        |> Enum.reverse
+        |> Enum.join(" ")
+      unique_id = "(##{:erlang.unique_integer([:positive, :monotonic])})"
+      "#{full_description} #{unique_id}"
+    end
+  end
+
   defmacro push({module, context}) do
     quote do
       old_stack = unquote(get_stack(module))
@@ -24,12 +48,6 @@ defmodule TexUnit.Stack do
     end
   end
 
-  defmacro stack(module) do
-    quote do
-      unquote(get_stack(module))
-    end
-  end
-
   defp get_stack(module) do
     quote do
       Module.get_attribute(unquote(module), :stack)
@@ -42,3 +60,4 @@ defmodule TexUnit.Stack do
     end
   end
 end
+

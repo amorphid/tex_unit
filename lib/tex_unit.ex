@@ -27,31 +27,15 @@ defmodule TexUnit do
     quote do
       unquote(description |> push)
 
-      flags =
-      __MODULE__
-        |> Stack.stack
-        |> Enum.map(fn context -> context.flag end)
-        |> Enum.reject(fn i -> is_nil(i) end)
-        |> List.flatten
-        |> Enum.reverse
-        |> Enum.into(%{})
-        |> Enum.to_list
-      descriptions =
-
-      full_description =
-          __MODULE__
-        |> Stack.stack
-        |> Enum.map(fn context -> context.description end)
-        |> Enum.reverse
-        |> Enum.join(" ")
-
-      unquote(pop)
-
-      unique_id = "(##{:erlang.unique_integer([:positive, :monotonic])})"
-      unique_description = "#{full_description} #{unique_id}"
+      flags = __MODULE__ |> Stack.flags
       Module.put_attribute(__MODULE__, :tag, flags)
       Module.put_attribute(__MODULE__, :__flag__, flags)
-      ExUnit.Case.test(unique_description, unquote(block))
+
+      new_description = __MODULE__ |> Stack.new_description
+
+      ExUnit.Case.test(new_description, unquote(block))
+
+      unquote(pop)
     end
   end
 
